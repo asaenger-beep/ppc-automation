@@ -1,0 +1,12 @@
+# Data files - kept local only, never pushed to GitHub
+reports/
+
+# Environment and credential files
+.env
+*.env
+secrets.json
+credentials.json
+
+# OS clutter
+.DS_Store
+Thumbs.db
