@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PPC Automation — Project Hub</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #22263a;
+      --border: #2e3352;
+      --accent: #4f6ef7;
+      --accent2: #7c3aed;
+      --green: #10b981;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --text: #e2e8f0;
+      --muted: #8892b0;
+      --tag-bg: #1e2d4a;
+      --tag-text: #60a5fa;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 28px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .header-left h1 {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      color: #fff;
+    }
+
+    .header-left p {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 3px;
+    }
+
+    .header-right {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: opacity 0.15s;
+      cursor: pointer;
+    }
+
+    .btn:hover { opacity: 0.85; }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+
+    .btn-ghost:hover { color: var(--text); border-color: #4a5280; }
+
+    /* ── Layout ── */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 40px 80px;
+    }
+
+    /* ── Status bar ── */
+    .status-bar {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 22px;
+      flex: 1;
+      min-width: 140px;
+    }
+
+    .stat-card .stat-num {
+      font-size: 28px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .stat-card .stat-label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── Section ── */
+    .section { margin-bottom: 44px; }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    /* ── Artifact grid ── */
+    .artifact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 14px;
+    }
+
+    .artifact-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 20px;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: border-color 0.15s, background 0.15s;
+      position: relative;
+    }
+
+    .artifact-card:hover {
+      border-color: var(--accent);
+      background: var(--surface2);
+    }
+
+    .artifact-card.empty {
+      border-style: dashed;
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .artifact-card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .artifact-name {
+      font-weight: 600;
+      font-size: 14px;
+      color: #fff;
+      line-height: 1.4;
+    }
+
+    .artifact-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .artifact-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      border-radius: 5px;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .tag.green { background: #052e16; color: #34d399; }
+    .tag.amber { background: #2d1c00; color: #fbbf24; }
+    .tag.purple { background: #1e0f3d; color: #a78bfa; }
+
+    .artifact-date {
+      font-size: 11px;
+      color: var(--muted);
+      margin-left: auto;
+    }
+
+    .artifact-ext {
+      background: var(--surface2);
+      color: var(--muted);
+      border-radius: 5px;
+      padding: 3px 7px;
+      font-size: 11px;
+      font-family: monospace;
+      white-space: nowrap;
+    }
+
+    /* ── Resources row ── */
+    .resources-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 14px;
+    }
+
+    .resource-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 20px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: border-color 0.15s;
+    }
+
+    .resource-card:hover { border-color: var(--accent); }
+
+    .resource-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .resource-text .resource-name {
+      font-weight: 600;
+      font-size: 14px;
+      color: #fff;
+    }
+
+    .resource-text .resource-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* ── Progress tracker ── */
+    .phase-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .phase-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .phase-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .phase-dot.active { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+    .phase-dot.done { background: var(--green); }
+    .phase-dot.pending { background: var(--border); }
+
+    .phase-name {
+      font-weight: 600;
+      font-size: 14px;
+      flex: 1;
+    }
+
+    .phase-desc {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .phase-status {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .phase-status.active { color: var(--accent); }
+    .phase-status.done { color: var(--green); }
+    .phase-status.pending { color: var(--muted); }
+
+    /* ── Empty state ── */
+    .empty-state {
+      background: var(--surface);
+      border: 1px dashed var(--border);
+      border-radius: 10px;
+      padding: 32px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 20px 40px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    footer a { color: var(--accent); text-decoration: none; }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      header, main { padding-left: 20px; padding-right: 20px; }
+      .artifact-grid, .resources-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>⚡ PPC Automation</h1>
+    <p>Project hub — artifacts, scripts, and shared resources</p>
+  </div>
+  <div class="header-right">
+    <!-- Replace href with your actual Google Drive shared folder link -->
+    <a class="btn btn-ghost" href="https://drive.google.com/drive/folders/1Uh-TO3pxw2_Rsi-ayAo3VM4p7pEG3knE" target="_blank">
+      📁 Shared Drive
+    </a>
+    <a class="btn btn-primary" href="https://github.com/asaenger-beep/ppc-automation" target="_blank">
+      ⬡ GitHub Repo
+    </a>
+  </div>
+</header>
+
+<main>
+
+  <!-- Stats -->
+  <div class="status-bar">
+    <div class="stat-card">
+      <div class="stat-num" id="count-scripts">0</div>
+      <div class="stat-label">Scripts</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="count-docs">0</div>
+      <div class="stat-label">Docs</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="count-reports">0</div>
+      <div class="stat-label">Reports</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="count-dashboards">0</div>
+      <div class="stat-label">Dashboards</div>
+    </div>
+  </div>
+
+  <!-- Project Phases -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">
+        <div class="section-icon" style="background:#1a2a4a;">🗺️</div>
+        Project Phases
+      </div>
+    </div>
+    <div class="phase-list">
+      <div class="phase-item">
+        <div class="phase-dot active"></div>
+        <div style="flex:1">
+          <div class="phase-name">Phase 1 — Discovery & Audit</div>
+          <div class="phase-desc">Map current PPC setup, identify automation opportunities, document data sources</div>
+        </div>
+        <div class="phase-status active">In Progress</div>
+      </div>
+      <div class="phase-item">
+        <div class="phase-dot pending"></div>
+        <div style="flex:1">
+          <div class="phase-name">Phase 2 — Data Pipeline</div>
+          <div class="phase-desc">Build automated data pulls from Google Ads / platforms into a unified structure</div>
+        </div>
+        <div class="phase-status pending">Upcoming</div>
+      </div>
+      <div class="phase-item">
+        <div class="phase-dot pending"></div>
+        <div style="flex:1">
+          <div class="phase-name">Phase 3 — Reporting Automation</div>
+          <div class="phase-desc">Automated performance reports, dashboards, and anomaly alerts</div>
+        </div>
+        <div class="phase-status pending">Upcoming</div>
+      </div>
+      <div class="phase-item">
+        <div class="phase-dot pending"></div>
+        <div style="flex:1">
+          <div class="phase-name">Phase 4 — Bid & Budget Automation</div>
+          <div class="phase-desc">Rule-based and algorithmic optimizations for bids, budgets, and scheduling</div>
+        </div>
+        <div class="phase-status pending">Upcoming</div>
+      </div>
+      <div class="phase-item">
+        <div class="phase-dot pending"></div>
+        <div style="flex:1">
+          <div class="phase-name">Phase 5 — Testing & Handoff</div>
+          <div class="phase-desc">QA, documentation, and transition to ongoing operations</div>
+        </div>
+        <div class="phase-status pending">Upcoming</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">
+        <div class="section-icon" style="background:#0a2a1a;">🐍</div>
+        Scripts
+      </div>
+    </div>
+    <!-- ADD SCRIPTS BELOW. Copy a card block and fill in the details. -->
+    <div id="scripts-container">
+      <div class="empty-state">No scripts added yet — they'll appear here as you build them.</div>
+    </div>
+  </div>
+
+  <!-- Dashboards -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">
+        <div class="section-icon" style="background:#1a1040;">📊</div>
+        Dashboards
+      </div>
+    </div>
+    <div id="dashboards-container">
+      <div class="empty-state">No dashboards added yet.</div>
+    </div>
+  </div>
+
+  <!-- Reports -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">
+        <div class="section-icon" style="background:#2a1a00;">📈</div>
+        Reports & Data
+      </div>
+    </div>
+    <div id="reports-container">
+      <div class="empty-state">No reports added yet.</div>
+    </div>
+  </div>
+
+  <!-- Docs -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">
+        <div class="section-icon" style="background:#1a0a2a;">📄</div>
+        Docs & Specs
+      </div>
+    </div>
+    <div id="docs-container">
+      <div class="empty-state">No docs added yet.</div>
+    </div>
+  </div>
+
+  <!-- Resources -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">
+        <div class="section-icon" style="background:#1a2a1a;">🔗</div>
+        Resources
+      </div>
+    </div>
+    <div class="resources-grid">
+      <!-- Replace href with your actual Google Drive shared folder link -->
+      <a class="resource-card" href="https://drive.google.com/drive/folders/1Uh-TO3pxw2_Rsi-ayAo3VM4p7pEG3knE" target="_blank">
+        <div class="resource-icon" style="background:#1a2d1a;">📂</div>
+        <div class="resource-text">
+          <div class="resource-name">Shared Google Drive</div>
+          <div class="resource-sub">Context docs, briefs, and raw data from collaborator</div>
+        </div>
+      </a>
+      <a class="resource-card" href="https://developers.google.com/google-ads/api/docs/start" target="_blank">
+        <div class="resource-icon" style="background:#1a1a2d;">📘</div>
+        <div class="resource-text">
+          <div class="resource-name">Google Ads API Docs</div>
+          <div class="resource-sub">Official API reference</div>
+        </div>
+      </a>
+      <a class="resource-card" href="https://github.com/asaenger-beep/ppc-automation" target="_blank">
+        <div class="resource-icon" style="background:#1a1a1a;">⬡</div>
+        <div class="resource-text">
+          <div class="resource-name">GitHub Repo</div>
+          <div class="resource-sub">Source code and version history</div>
+        </div>
+      </a>
+      <a class="resource-card" href="https://www.predictiveindex.com/" target="_blank">
+        <div class="resource-icon" style="background:#1a2240;">🌐</div>
+        <div class="resource-text">
+          <div class="resource-name">Predictive Index Website</div>
+          <div class="resource-sub">predictiveindex.com — main company site</div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  PPC Automation Project &nbsp;·&nbsp; Last updated: <span id="last-updated"></span> &nbsp;·&nbsp;
+  <a href="https://github.com/asaenger-beep/ppc-automation" target="_blank">View on GitHub</a>
+</footer>
+
+<script>
+  // ── Auto-set last updated date ──────────────────────────────────────────
+  document.getElementById('last-updated').textContent =
+    document.lastModified
+      ? new Date(document.lastModified).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+      : new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+  // ── Artifact counter ────────────────────────────────────────────────────
+  // Counts artifact-card elements in each section and updates the stat bar
+  function countArtifacts(containerId, statId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    const cards = container.querySelectorAll('.artifact-card:not(.empty)');
+    document.getElementById(statId).textContent = cards.length;
+  }
+
+  countArtifacts('scripts-container', 'count-scripts');
+  countArtifacts('dashboards-container', 'count-dashboards');
+  countArtifacts('reports-container', 'count-reports');
+  countArtifacts('docs-container', 'count-docs');
+
+
+  /*
+  ═══════════════════════════════════════════════════════════════════════════
+  HOW TO ADD AN ARTIFACT
+  ═══════════════════════════════════════════════════════════════════════════
+
+  To add a new item, replace the <div class="empty-state"> in the relevant
+  section container with one or more artifact-card blocks like this:
+
+  <div class="artifact-grid">
+    <a class="artifact-card" href="PATH_OR_URL_TO_FILE" target="_blank">
+      <div class="artifact-card-top">
+        <div class="artifact-name">Name of the artifact</div>
+        <div class="artifact-ext">.py</div>
+      </div>
+      <div class="artifact-desc">What it does — one or two sentences.</div>
+      <div class="artifact-meta">
+        <span class="tag green">ready</span>
+        <span class="tag">phase 1</span>
+        <span class="artifact-date">May 2026</span>
+      </div>
+    </a>
+  </div>
+
+  Tag color options: default (blue), green, amber, purple
+  ═══════════════════════════════════════════════════════════════════════════
+  */
+</script>
+
+</body>
+</html>
